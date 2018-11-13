@@ -1,6 +1,7 @@
 package org.oauth2;
 
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -43,6 +44,7 @@ public class TestEndpoints {
     public String getProduct(@PathVariable String id) {
         //for debug
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        JSONObject.toJSONString(authentication);
         return "product id : " + id;
     }
 
@@ -50,6 +52,7 @@ public class TestEndpoints {
     public String getOrder(@PathVariable String id) {
         //for debug
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        JSONObject.toJSONString(authentication);
         return "order id : " + id;
     }
 }

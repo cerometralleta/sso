@@ -62,6 +62,12 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.32</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>0.7.5</version>
+        </dependency>
     </dependencies>
 
     <build>

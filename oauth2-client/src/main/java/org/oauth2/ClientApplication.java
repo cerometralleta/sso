@@ -8,6 +8,7 @@ import org.springframework.cache.annotation.EnableCaching;
 /**
  * Created by lenovo on 2018/6/3.
  */
+@EnableOAuth2Sso
 @SpringBootApplication
 @EnableCaching
 public class ClientApplication {
