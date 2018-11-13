@@ -1,10 +1,8 @@
 package org.oauth2;
 
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -13,8 +11,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
  * Created by ningzuokun on 2017/12/18.
  */
 @Configuration
-@Order(-1)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     /**
      * 设置 HTTP 验证规则
@@ -24,33 +24,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
-        // 关闭csrf验证
-        http.csrf().disable();
-        http
-                .requestMatchers()
-                .antMatchers("/oauth/authorize", "/oauth/confirm_access",
-                        "/login/**", "/logout/**")
+        http.requestMatchers()
+                .antMatchers("/login", "/oauth/authorize")
                 .and()
                 .authorizeRequests()
-                .antMatchers("/oauth/**").authenticated()
+                .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .permitAll();
-
-        http.headers().frameOptions().sameOrigin().disable();
-        http.cors().configurationSource(new BootstrapCorsConfigurationSource());
-        http.requestMatchers().antMatchers(HttpMethod.OPTIONS, "/oauth/token").and().csrf().disable();
+                .formLogin().permitAll();
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(securityUserDetailService()).passwordEncoder(new Md5PasswordEncoder());
-    }
-
-
-    @Bean
-    public SecurityUserDetailService securityUserDetailService() {
-        return new SecurityUserDetailService();
+        auth.parentAuthenticationManager(authenticationManager)
+                .inMemoryAuthentication()
+                .withUser("123").password("123").roles("USER");
     }
 }

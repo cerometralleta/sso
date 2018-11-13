@@ -12,7 +12,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="oauth2-author" target="1.8" />
-      <module name="oauth2-client" target="1.7" />
+      <module name="oauth2-client" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
