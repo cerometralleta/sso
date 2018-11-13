@@ -19,9 +19,12 @@ import org.springframework.security.oauth2.provider.token.store.redis.RedisToken
 @Slf4j
 @Configuration
 @EnableAuthorizationServer
+
+// 同时为资源服务器, 其他资源需要token访问
 @EnableResourceServer
 public class OAuth2ServerConfig extends AuthorizationServerConfigurerAdapter {
-
+    public static final String PERMITALL = "permitAll()";
+    public static final String isAuthenticated = "isAuthenticated()";
     @Autowired
     AuthenticationManager authenticationManager;
     @Autowired
@@ -29,8 +32,13 @@ public class OAuth2ServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-        oauthServer.tokenKeyAccess("permitAll()")
-                .checkTokenAccess("isAuthenticated()");
+        // /oauth/token_key endpoint, which is secure by default with access rule "denyAll()".
+        // You can open it up by injecting a standard SpEL expression into the AuthorizationServerSecurityConfigurer
+        // (e.g. "permitAll()" is probably adequate since it is a public key).
+        oauthServer.tokenKeyAccess(PERMITALL).checkTokenAccess(isAuthenticated);
+
+        //允许表单认证
+        oauthServer.allowFormAuthenticationForClients();
     }
 
     @Override
@@ -40,7 +48,7 @@ public class OAuth2ServerConfig extends AuthorizationServerConfigurerAdapter {
                 .secret("secret")
                 .authorizedGrantTypes("authorization_code")
                 .scopes("user_info")
-                .autoApprove(false);
+                .autoApprove(true);
     }
 
     @Override
